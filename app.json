@@ -1,0 +1,69 @@
+{
+    "name": "BookdlBot",
+    "description": "https://telegram.dog/BookdlBot",
+    "keywords": [
+        "telegram",
+        "best",
+        "book",
+        "downloader",
+        "uploader"
+    ],
+    "success_url": "https://github.com/Samfun75/Bookdlbot",
+    "website": "https://github.com/Samfun75/Bookdlbot",
+    "repository": "https://github.com/Samfun75/Bookdlbot",
+    "env": {
+        "ENV": {
+            "description": "Setting this to ANYTHING will enable VARs when in ENV mode",
+            "value": "ANYTHING"
+        },
+        "TG_BOT_TOKEN": {
+            "description": "Your bot token, as a string.",
+            "required": true
+        },
+        "TG_API_ID": {
+            "description": "Get this value from https://my.telegram.org",
+            "required": true
+        },
+        "TG_API_HASH": {
+            "description": "Get this value from https://my.telegram.org",
+            "required": true
+        },
+        "TG_DUSTBIN_CHAT": {
+            "description": "Watch this video to understand what the dustbin is: https://youtu.be/vgzMacnI5Z8",
+            "required": true
+        },
+        "ALLOWED_USERS": {
+            "description": "A list of users (user ids) allowed to use the bot. Please enter in the format [123123123, 321321321]",
+            "required": true
+        },
+        "DATABASE_DB_HOST": {
+            "description": "Watch this video to understand what database is: https://youtu.be/vgzMacnI5Z8",
+            "required": true
+        },
+        "DATABASE_DB_USERNAME": {
+            "description": "Watch this video to understand what database is: https://youtu.be/vgzMacnI5Z8",
+            "required": true
+        },
+        "DATABASE_DB_PASSWORD": {
+            "description": "Watch this video to understand what database is: https://youtu.be/vgzMacnI5Z8",
+            "required": true
+        },
+        "DATABASE_DB_NAME": {
+            "description": "Watch this video to understand what database is: https://youtu.be/vgzMacnI5Z8",
+            "required": true
+        },
+        "DATABASE_DB_TYPE": {
+            "description": "The type of Mongodb you are using. Enter 'Mongo_Atlas' or 'Mongo_Community'",
+            "required": true
+        }
+    },
+    "buildpacks": [{
+        "url": "heroku/python"
+    }],
+    "formation": {
+        "worker": {
+            "quantity": 1,
+            "size": "free"
+        }
+    }
+}

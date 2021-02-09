@@ -1,0 +1,7 @@
+humanfriendly
+libgenesis
+lxml
+pymongo[srv]
+Pyrogram==1.1.13
+TgCrypto
+tldextract
