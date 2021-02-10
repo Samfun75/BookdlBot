@@ -1,1 +1,1 @@
-web: python -m mega
+worker: python -m bookdl
