@@ -2,6 +2,6 @@ humanfriendly
 libgenesis
 lxml
 pymongo[srv]
-Pyrogram==1.1.13
+Pyrogram
 TgCrypto
 tldextract
