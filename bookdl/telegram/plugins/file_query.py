@@ -1,6 +1,11 @@
+import logging
 from pyrogram import Client
 from pyrogram.types import InlineQuery, InlineQueryResultArticle, InputTextMessageContent, \
     InlineKeyboardMarkup, InlineKeyboardButton
+from pyrogram.file_id import FileId, FileType
+from pyrogram.raw.types import InputBotInlineResultDocument, InputDocument, InputBotInlineMessageMediaAuto
+from pyrogram.raw.functions.messages import SetInlineBotResults
+from bookdl.telegram import BookDLBot
 from bookdl.database.files import BookdlFiles
 from libgenesis import Libgen
 
@@ -14,29 +19,57 @@ async def inline_query_handler(c: Client, iq: InlineQuery):
         q_res_data = await BookdlFiles().get_file_by_name(q.split(':')[1].strip(), 50)
         me = await c.get_me()
 
-        if q_res_data is not None:
-            for file in q_res_data:
-                res.append(
-                    InlineQueryResultArticle(
-                        title=file['title'],
-                        description=f"File Name: {file['file_name']}\n"
-                                    f"File Type: {file['file_type']}",
-                        thumb_url="https://cdn3.iconfinder.com/data/icons/"
-                        "education-vol-1-34/512/15_File_files_office-256.png" if file[
-                            'coverurl'] is None else file['coverurl'],
-                        input_message_content=InputTextMessageContent(
-                            message_text=f"Get this file\n"
-                            f"File Name: {file['file_name']}\n"
-                            f"File Type: {file['file_type']}"
-                        ),
-                        reply_markup=InlineKeyboardMarkup([[
-                            InlineKeyboardButton(
-                                text="Get Book",
-                                url=f"http://t.me/{me.username}?start=plf-{file['_id']}"
-                            )
-                        ]])
-                    )
+        # if q_res_data is not None:
+        #     for file in q_res_data:
+        #         res.append(
+        #             InlineQueryResultArticle(
+        #                 title=file['title'],
+        #                 description=f"File Name: {file['file_name']}\n"
+        #                             f"File Type: {file['file_type']}",
+        #                 thumb_url="https://cdn3.iconfinder.com/data/icons/"
+        #                 "education-vol-1-34/512/15_File_files_office-256.png" if file[
+        #                     'coverurl'] is None else file['coverurl'],
+        #                 input_message_content=InputTextMessageContent(
+        #                     message_text=f"Get this file\n"
+        #                     f"File Name: {file['file_name']}\n"
+        #                     f"File Type: {file['file_type']}"
+        #                 ),
+        #                 reply_markup=InlineKeyboardMarkup([[
+        #                     InlineKeyboardButton(
+        #                         text="Get Book",
+        #                         url=f"http://t.me/{me.username}?start=plf-{file['_id']}"
+        #                     )
+        #                 ]])
+        #             )
+        #         )
+        for file in q_res_data:
+            file_id_obj = FileId.decode(file['file_id'])
+            res.append(
+                InputBotInlineResultDocument(
+                    id=file['_id'],
+                    type=FileType.DOCUMENT.name,
+                    document=InputDocument(
+                        id=file['file_id'],
+                        access_hash=file_id_obj.access_hash,
+                        file_reference=file_id_obj.file_reference
+                    ),
+                    send_message=InputBotInlineMessageMediaAuto(
+                        message=file['title']
+                    ),
+                    title=file['title'],
+                    description=f"File Name: {file['file_name']}\n"
+                                f"File Type: {file['file_type']}",
                 )
+            )
+
+        raw_result = await BookDLBot.send(
+            data= SetInlineBotResults(
+                query_id=iq.id,
+                results=res,
+                cache_time=0
+            )
+        )
+        logging.info(raw_result)
 
     else:
         if q.strip():

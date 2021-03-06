@@ -1,5 +1,5 @@
 .vscode/
-/env
+/venv
 *.ini
 *.cfg
 *.session

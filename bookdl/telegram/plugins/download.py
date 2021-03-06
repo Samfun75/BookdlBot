@@ -177,7 +177,8 @@ async def send_file_to_dustbin(file_message: Message, md5: str,):
         chat_id=fd_msg.chat.id,
         md5=md5,
         file_type=fd_msg.document.mime_type,
-        coverurl=detail[book_id]['coverurl'] if detail[book_id]['coverurl'] else ''
+        coverurl=detail[book_id]['coverurl'] if detail[book_id]['coverurl'] else '',
+        file_id=fd_msg.document.file_id
     )
 
 

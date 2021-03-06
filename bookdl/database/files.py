@@ -19,7 +19,7 @@ class BookdlFiles:
         self.files_collection = BookdlDB().db['Files']
 
     async def insert_new_files(self, title: str, file_name: str, msg_id: int, chat_id: int,
-                               md5: str, file_type: str, coverurl: str):
+                               md5: str, file_type: str, coverurl: str, file_id: str):
         self.files_collection.insert_one({
             "title": title,
             "file_name": file_name,
@@ -27,7 +27,8 @@ class BookdlFiles:
             "chat_id": chat_id,
             "md5": md5,
             "file_type": file_type,
-            "coverurl": coverurl
+            "coverurl": coverurl,
+            "file_id": file_id
         })
 
     async def count_files_by_md5(self, md5: str):
