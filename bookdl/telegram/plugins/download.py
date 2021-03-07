@@ -1,6 +1,8 @@
 import re
 import os
 import time
+import requests
+import aiofiles
 import shutil
 import asyncio
 import logging
@@ -15,7 +17,7 @@ from bookdl.telegram import BookDLBot
 from bookdl.database.files import BookdlFiles
 from bookdl.database.users import BookdlUsers
 from pyrogram.errors import MessageNotModified, FloodWait
-from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, ForceReply
+from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 
 
 mirrors = ['library.lol', 'libgen.lc', 'libgen.gs', 'b-ok.cc']
@@ -73,11 +75,11 @@ async def get_md5(link: str) -> str:
     return None
 
 
-async def get_detail(md5: str) -> dict:
+async def get_detail(md5: str, return_fields: list = []) -> dict:
     result = await Libgen().search(query=md5,
                                    search_field='md5',
                                    return_fields=['title', 'author', 'publisher', 'year', 'language', 'volumeinfo',
-                                                  'filesize', 'extension', 'timeadded', 'timelastmodified', 'coverurl'])
+                                                  'filesize', 'extension', 'timeadded', 'timelastmodified', 'coverurl'] if not return_fields else return_fields)
     return result
 
 
@@ -141,18 +143,32 @@ async def download_book(md5: str, msg: Message):
     status_progress[f"{ack_msg.chat.id}{ack_msg.message_id}"] = {}
     await upload_book(file_path, ack_msg, md5)
 
+async def get_thumb(url: str, ack_msg: Message):
+    file_name = os.path.basename(url)
+    thumb_file = Path.joinpath(Common().working_dir,Path(f'{ack_msg.chat.id}+{ack_msg.message_id}'),Path(file_name))
+    resp = requests.get(url, allow_redirects=True)
+    async with aiofiles.open(thumb_file, mode='wb') as dl_file:
+        await dl_file.write(resp.content)
+    return thumb_file
 
 async def upload_book(file_path: Path, ack_msg: Message, md5: str):
     ack_msg = await ack_msg.edit_text(
         'About to upload book...'
     )
     file_name = os.path.basename(file_path)
+    detail = await get_detail(md5=md5, return_fields=['coverurl', 'title'])
+    book_id = list(detail.keys())[0]
+    cover_url = detail[book_id]['coverurl']
+    thumb = await get_thumb(cover_url, ack_msg)
     status_progress[f"{ack_msg.chat.id}{ack_msg.message_id}"]["last_upload_updated"] = time.time()
     try:
         file_message = await ack_msg.reply_document(
             document=file_path,
             progress=upload_progress_hook,
-            progress_args=[ack_msg.chat.id, ack_msg.message_id, file_name])
+            progress_args=[ack_msg.chat.id, ack_msg.message_id, file_name],
+            thumb=thumb,
+            caption=detail[book_id]['title']
+        )
 
         await send_file_to_dustbin(file_message, md5)
     except FloodWait as e:
@@ -167,7 +183,7 @@ async def upload_book(file_path: Path, ack_msg: Message, md5: str):
 
 
 async def send_file_to_dustbin(file_message: Message, md5: str,):
-    fd_msg = await file_message.forward(chat_id=Common().bot_dustbin)
+    fd_msg = await file_message.copy(chat_id=Common().bot_dustbin)
     detail = await get_detail(md5)
     book_id = list(detail.keys())[0]
     await BookdlFiles().insert_new_files(

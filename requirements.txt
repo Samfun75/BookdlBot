@@ -5,3 +5,5 @@ pymongo[srv]
 Pyrogram
 TgCrypto
 tldextract
+requests
+aiofiles
