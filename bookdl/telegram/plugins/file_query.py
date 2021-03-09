@@ -31,10 +31,11 @@ async def inline_query_handler(c: Client, iq: InlineQuery):
                             message=file['title']
                         ),
                         title=file['title'],
-                        description=f"File Name: {file['file_name']}\n\n"
+                        description=f"File Name: {file['file_name']}\n"
                                     f"File Type: {file['file_type']}",
                     )
                 )
+
             await BookDLBot.send(
                 data= SetInlineBotResults(
                     query_id=int(iq.id),
