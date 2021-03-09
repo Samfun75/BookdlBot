@@ -1,4 +1,3 @@
-import logging
 from pyrogram import Client
 from pyrogram.types import InlineQuery, InlineQueryResultArticle, InputTextMessageContent
 from pyrogram.file_id import FileId
@@ -32,7 +31,7 @@ async def inline_query_handler(c: Client, iq: InlineQuery):
                             message=file['title']
                         ),
                         title=file['title'],
-                        description=f"File Name: {file['file_name']}\n"
+                        description=f"File Name: {file['file_name']}\n\n"
                                     f"File Type: {file['file_type']}",
                     )
                 )

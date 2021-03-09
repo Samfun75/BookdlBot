@@ -169,7 +169,7 @@ async def upload_book(file_path: Path, ack_msg: Message, md5: str):
             thumb=thumb,
             caption=detail[book_id]['title']
         )
-
+        await ack_msg.delete()
         await send_file_to_dustbin(file_message, md5)
     except FloodWait as e:
         logging.error(e)
@@ -177,7 +177,6 @@ async def upload_book(file_path: Path, ack_msg: Message, md5: str):
     except Exception as e:
         logging.error(e)
     finally:
-        await ack_msg.delete()
         if Path.is_dir(Path(file_path).parent):
             shutil.rmtree(Path(file_path).parent)
 
