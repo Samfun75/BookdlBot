@@ -21,7 +21,7 @@ async def inline_query_handler(c: Client, iq: InlineQuery):
                 res.append(
                     InputBotInlineResultDocument(
                         id=str(file['_id']),
-                        type='file',
+                        type='document',
                         document=InputDocument(
                             id=file_id_obj.media_id,
                             access_hash=file_id_obj.access_hash,
