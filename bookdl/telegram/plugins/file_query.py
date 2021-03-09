@@ -15,34 +15,36 @@ async def inline_query_handler(c: Client, iq: InlineQuery):
     res = []
 
     if q.strip().startswith('dl:'):
-        q_res_data = await BookdlFiles().get_file_by_name(q.split(':')[1].strip(), 50)   
-        for file in q_res_data:
-            file_id_obj = FileId.decode(file['file_id'])
-            res.append(
-                InputBotInlineResultDocument(
-                    id=str(file['_id']),
-                    type='file',
-                    document=InputDocument(
-                        id=file_id_obj.media_id,
-                        access_hash=file_id_obj.access_hash,
-                        file_reference=file_id_obj.file_reference
-                    ),
-                    send_message=InputBotInlineMessageMediaAuto(
-                        message=file['title']
-                    ),
-                    title=file['title'],
-                    description=f"File Name: {file['file_name']}\n"
-                                f"File Type: {file['file_type']}",
+        q_res_data = await BookdlFiles().get_file_by_name(q.split(':')[1].strip(), 50)
+        if q_res_data:
+            for file in q_res_data:
+                file_id_obj = FileId.decode(file['file_id'])
+                res.append(
+                    InputBotInlineResultDocument(
+                        id=str(file['_id']),
+                        type='file',
+                        document=InputDocument(
+                            id=file_id_obj.media_id,
+                            access_hash=file_id_obj.access_hash,
+                            file_reference=file_id_obj.file_reference
+                        ),
+                        send_message=InputBotInlineMessageMediaAuto(
+                            message=file['title']
+                        ),
+                        title=file['title'],
+                        description=f"File Name: {file['file_name']}\n"
+                                    f"File Type: {file['file_type']}",
+                    )
+                )
+            await BookDLBot.send(
+                data= SetInlineBotResults(
+                    query_id=int(iq.id),
+                    results=res,
+                    cache_time=0
                 )
             )
-
-        await BookDLBot.send(
-            data= SetInlineBotResults(
-                query_id=int(iq.id),
-                results=res,
-                cache_time=0
-            )
-        )
+        else:
+            await iq.answer([])
         return
     else:
         if q.strip():
