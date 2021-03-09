@@ -10,8 +10,8 @@ async def start_message_handler(c: Client, m: Message):
     await BookdlUsers().insert_user(m.from_user.id)
     if len(m.command) > 1:
         if m.command[1].split("-")[0] == 'plf':
-            file_id = m.command[1].split("-", 1)[1]
-            file_details = await BookdlFiles().get_file_by_file_id(file_id)
+            mongo_id = m.command[1].split("-", 1)[1]
+            file_details = await BookdlFiles().get_file_by_mongo_id(mongo_id)
 
             if file_details is not None:
                 file_message = await c.get_messages(
