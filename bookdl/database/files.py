@@ -16,7 +16,7 @@ class BookdlFiles:
             get_file_by_file_id: returns the document for the file with the given telegram file_id.
             get_file_by_file_name: returns the documents for the files with the given file name.
         """
-        self.files_collection = BookdlDB().db['TestFiles']
+        self.files_collection = BookdlDB().db['Files']
 
     async def insert_new_files(self, title: str, file_name: str, msg_id: int, chat_id: int,
                                md5: str, file_type: str, coverurl: str, file_id: str):
