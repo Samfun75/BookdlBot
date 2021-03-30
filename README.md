@@ -76,6 +76,8 @@ db_type = Mongo_Atlas (or Mongo_Community)
 
 Run bot with
 
-`python -m mega`
+`python -m bookdl`
+
+and send `/start` to the bot
 
 stop with <kbd>CTRL</kbd>+<kbd>C</kbd>
