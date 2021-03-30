@@ -35,7 +35,7 @@ class BookdlFiles:
         return self.files_collection.count({"md5": md5})
 
     async def get_file_by_md5(self, md5: str):
-        return self.files_collection.find({"md5": md5})
+        return self.files_collection.find_one({"md5": md5})
 
     async def get_file_by_mongo_id(self, file_id: str):
         return self.files_collection.find_one({"_id": ObjectId(file_id)})
