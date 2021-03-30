@@ -16,7 +16,7 @@ class BookdlFiles:
             get_file_by_file_id: returns the document for the file with the given telegram file_id.
             get_file_by_file_name: returns the documents for the files with the given file name.
         """
-        self.files_collection = BookdlDB().db['Files']
+        self.files_collection = BookdlDB().db['TestFiles']
 
     async def insert_new_files(self, title: str, file_name: str, msg_id: int, chat_id: int,
                                md5: str, file_type: str, coverurl: str, file_id: str):
@@ -35,7 +35,7 @@ class BookdlFiles:
         return self.files_collection.count({"md5": md5})
 
     async def get_file_by_md5(self, md5: str):
-        return self.files_collection.find({"md5": md5})
+        return self.files_collection.find_one({"md5": md5})
 
     async def get_file_by_mongo_id(self, file_id: str):
         return self.files_collection.find_one({"_id": ObjectId(file_id)})

@@ -3,7 +3,7 @@ import asyncio
 from pyrogram import idle
 from bookdl.telegram import BookDLBot
 
-
+logger = logging.getLogger(__name__)
 async def main():
     await BookDLBot.start()
     await idle()
@@ -14,4 +14,4 @@ if __name__ == "__main__":
     try:
         loop.run_until_complete(main())
     except KeyboardInterrupt:
-        logging.error("KeyboardInterruption: Services Terminated!")
+        logger.error("KeyboardInterruption: Services Terminated!")

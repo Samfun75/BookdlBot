@@ -19,7 +19,7 @@ from bookdl.database.users import BookdlUsers
 from pyrogram.errors import MessageNotModified, FloodWait
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 
-
+logger = logging.getLogger(__name__)
 mirrors = ['library.lol', 'libgen.lc', 'libgen.gs', 'b-ok.cc']
 status_progress = {}
 
@@ -27,8 +27,6 @@ status_progress = {}
 @Client.on_message(filters.private & filters.text, group=0)
 async def new_message_dl_handler(c: Client, m: Message):
     await BookdlUsers().insert_user(m.from_user.id)
-
-    me = await c.get_me()
 
     regex = re.compile(
         r'^(?:http|ftp)s?://'  # http:// or https://  domain...
@@ -43,24 +41,10 @@ async def new_message_dl_handler(c: Client, m: Message):
 
     if re.match(regex, m.text) and domain in mirrors:
         md5 = await get_md5(m.text)
-        md5_count = await BookdlFiles().count_files_by_md5(md5)
-        if md5_count == 0:
-            await book_process(m, md5)
-        else:
-            url_details = await BookdlFiles().get_file_by_md5(md5)
-            files = [
-                f"<a href='http://t.me/{me.username}"
-                f"?start=plf-{file['_id']}'>{file['file_name']} - {file['file_type']}</a>"
-                for file in url_details
-            ]
-            files_msg_formatted = '\n'.join(files)
-
-            await m.reply_text(
-                f"I also do have the following files that were uploaded earlier with the same url:\n"
-                f"{files_msg_formatted}",
-                disable_web_page_preview=True,
-                quote=True)
-            await book_process(m, md5)
+        await book_process(m, md5)
+    else:
+        m.reply_text(text=f'Sorry links from {domain} not supported.',
+                     quote=True)
 
 
 async def get_md5(link: str) -> str:
@@ -138,6 +122,11 @@ async def download_book(md5: str, msg: Message):
         'About to download book...',
         quote=True
     )
+    book = await BookdlFiles().get_file_by_md5(md5=md5)
+    if book:
+        await BookDLBot.copy_message(chat_id=msg.chat.id, from_chat_id=book['chat_id'], message_id=book['msg_id'])
+        await ack_msg.delete()
+        return
     link = f'http://library.lol/main/{md5}'
     file_path = await Libgen().download(link, dest_folder=Path.joinpath(Common().working_dir, Path(f'{ack_msg.chat.id}+{ack_msg.message_id}')))
     status_progress[f"{ack_msg.chat.id}{ack_msg.message_id}"] = {}
@@ -172,10 +161,10 @@ async def upload_book(file_path: Path, ack_msg: Message, md5: str):
         await ack_msg.delete()
         await send_file_to_dustbin(file_message, md5)
     except FloodWait as e:
-        logging.error(e)
+        logger.error(e)
         await asyncio.sleep(e.x)
     except Exception as e:
-        logging.error(e)
+        logger.error(e)
     finally:
         if Path.is_dir(Path(file_path).parent):
             shutil.rmtree(Path(file_path).parent)
@@ -207,9 +196,9 @@ async def upload_progress_hook(current, total, chat_id, message_id, file_name):
                      f"Status: **{size.format_size(current, binary=True)}** of **{size.format_size(total, binary=True)}**"
             )
         except MessageNotModified as e:
-            logging.error(e)
+            logger.error(e)
         except FloodWait as e:
-            logging.error(e)
+            logger.error(e)
             await asyncio.sleep(e.x)
 
         status_progress[f"{chat_id}{message_id}"][
