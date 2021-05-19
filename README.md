@@ -76,13 +76,13 @@ db_type = Mongo_Atlas (or Mongo_Community)
 
 Run bot with
 
-`python -m mega`
+`python -m bookdl`
 
 stop with <kbd>CTRL</kbd>+<kbd>C</kbd>
 
 ## Usage
 
-- Send /start and press 'Search 🔍' and on the open inline query type the book name.
+- Send /start and press 'Search 🔍' and on the open inline query type the book name
 - Send a book's MD5 like 'MD5:a382109f7fdde3be5b2cb4f82d97443b'
 - Send a book link from 'library.lol, libgen.lc, libgen.gs or b-ok.cc'
 
