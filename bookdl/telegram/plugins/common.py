@@ -41,10 +41,18 @@ async def start_message_handler(c: Client, m: Message):
 @Client.on_message(filters.command("help", prefixes=["/"]))
 async def help_message_handler(c: Client, m: Message):
     await m.reply_text(
-        text="Hello! I'm **@BookdlBot.**\n\n"
+        text="Hello! I'm **BookdlBot.**\n"
+        "Original bot [SamfunBookdlBot](https://t.me/SamfunBookdlbot)\n"
+        "Source [Bookdlbot](https://github.com/Samfun75/BookdlBot)\n\n"
         "Here are the commands you can use:\n"
         "/start : Start the bot.\n"
-        "/help: Show this helpful message")
+        "/help: Show this helpful message\n\n"
+        "You can also download books by sending the link if you have a book link from the following sites\n"
+        "library.lol, libgen.lc, libgen.gs or b-ok.cc\n\n"
+        "Or you can send the book's md5 like so\n"
+        "MD5:a382109f7fdde3be5b2cb4f82d97443b",
+        disable_web_page_preview=True
+        )
 
 
 @Client.on_message(group=-1)

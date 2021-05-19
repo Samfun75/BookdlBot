@@ -28,23 +28,27 @@ status_progress = {}
 async def new_message_dl_handler(c: Client, m: Message):
     await BookdlUsers().insert_user(m.from_user.id)
 
-    regex = re.compile(
-        r'^(?:http|ftp)s?://'  # http:// or https://  domain...
-        r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'
-        r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
-        r'(?::\d+)?'  # optional port
-        r'(?:/?|[/?]\S+)$',
-        re.IGNORECASE)
-
-    td = tldextract.extract(m.text)
-    domain = str(td.domain) + '.' + str(td.suffix)
-
-    if re.match(regex, m.text) and domain in mirrors:
-        md5 = await get_md5(m.text)
+    if m.text.startswith('MD5:'):
+        md5 = m.text.splitlines()[0].split(':')[1].strip()
         await book_process(m, md5)
     else:
-        m.reply_text(text=f'Sorry links from {domain} not supported.',
-                     quote=True)
+        regex = re.compile(
+            r'^(?:http|ftp)s?://'  # http:// or https://  domain...
+            r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'
+            r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
+            r'(?::\d+)?'  # optional port
+            r'(?:/?|[/?]\S+)$',
+            re.IGNORECASE)
+
+        td = tldextract.extract(m.text)
+        domain = str(td.domain) + '.' + str(td.suffix)
+
+        if re.match(regex, m.text) and domain in mirrors:
+            md5 = await get_md5(m.text)
+            await book_process(m, md5)
+        else:
+            m.reply_text(text=f'Sorry links from {domain} not supported.',
+                        quote=True)
 
 
 async def get_md5(link: str) -> str:
@@ -112,7 +116,7 @@ async def book_process(msg: Message, md5: str):
                 quote=True)
     else:
         await msg.reply_text(
-            text="Couldn't get details for this Book. Sorry, Try searching in the bot or get another supported link!",
+            text="Couldn't get details for this Book. Sorry, Try searching in the bot or get another supported link or md5!",
             reply_markup=None,
             quote=True)
 

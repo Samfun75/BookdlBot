@@ -1,5 +1,5 @@
 from pyrogram import Client
-from pyrogram.types import InlineQuery, InlineQueryResultArticle, InputTextMessageContent
+from pyrogram.types import InlineQuery, InlineQueryResultArticle, InputTextMessageContent, ChosenInlineResult, InlineKeyboardMarkup, InlineKeyboardButton
 from pyrogram.file_id import FileId
 from pyrogram.raw.types import InputBotInlineResultDocument, InputDocument, InputBotInlineMessageMediaAuto
 from pyrogram.raw.functions.messages import SetInlineBotResults
@@ -51,7 +51,7 @@ async def inline_query_handler(c: Client, iq: InlineQuery):
             result = await Libgen(result_limit=50).search(query=q.strip(),
                                                           return_fields=['title', 'pages', 'language', 'publisher',
                                                                          'year', 'author', 'extension', 'coverurl',
-                                                                         'volumeinfo', 'mirrors'])
+                                                                         'volumeinfo', 'mirrors', 'md5'])
             if result is not None:
                 for item in result:
                     res.append(
@@ -65,8 +65,9 @@ async def inline_query_handler(c: Client, iq: InlineQuery):
                             "education-vol-1-34/512/15_File_files_office-256.png" if result[
                                 item]['coverurl'] is None else result[item]['coverurl'],
                             input_message_content=InputTextMessageContent(
-                                message_text=result[item]['mirrors']['main'],
-                                disable_web_page_preview=True),
+                                message_text=f"MD5: {result[item]['md5']}\n"
+                                             f"Title: **{result[item]['title']}**\n"
+                                             f"Author: **{result[item]['author']}**"),
                             reply_markup=None
                         )
                     )

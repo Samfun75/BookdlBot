@@ -3,7 +3,7 @@ humanfriendly==9.1
 libgenesis==0.1.4
 lxml==4.6.2
 pymongo[srv]==3.11.3
-Pyrogram==1.1.13
+Pyrogram==1.2.9
 requests==2.25.1
 TgCrypto==1.2.2
 tldextract==3.1.0
