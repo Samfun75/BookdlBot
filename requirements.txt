@@ -1,6 +1,6 @@
 aiofiles==0.6.0
 humanfriendly==9.1
-libgenesis==0.1.5
+libgenesis==0.1.6
 lxml==4.6.2
 pymongo[srv]==3.11.3
 Pyrogram==1.2.9
