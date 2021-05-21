@@ -132,7 +132,13 @@ async def download_book(md5: str, msg: Message):
         await ack_msg.delete()
         return
     link = f'http://library.lol/main/{md5}'
-    file_path = await Libgen().download(link, dest_folder=Path.joinpath(Common().working_dir, Path(f'{ack_msg.chat.id}+{ack_msg.message_id}')))
+    detail = await get_detail(md5)
+    file_path = await Libgen().download(link,
+                                        dest_folder=Path.joinpath(Common().working_dir,
+                                                                  Path(f'{ack_msg.chat.id}+{ack_msg.message_id}')),
+                                        progress=download_progress_hook,
+                                        progress_args=[ack_msg.chat.id, ack_msg.message_id, detail[list(detail.keys())[0]]['title']]
+                )
     status_progress[f"{ack_msg.chat.id}{ack_msg.message_id}"] = {}
     await upload_book(file_path, ack_msg, md5)
 
@@ -188,6 +194,20 @@ async def send_file_to_dustbin(file_message: Message, md5: str,):
         coverurl=detail[book_id]['coverurl'] if detail[book_id]['coverurl'] else '',
         file_id=fd_msg.document.file_id
     )
+
+async def download_progress_hook(current, total, chat_id, message_id, title):
+    try:
+        await BookDLBot.edit_message_text(
+            chat_id=chat_id,
+            message_id=message_id,
+            text=f"Downloading: **{title}**\n"
+                 f"Status: **{size.format_size(current, binary=True)}** of **{size.format_size(total, binary=True)}**"
+        )
+    except MessageNotModified as e:
+        logger.error(e)
+    except FloodWait as e:
+        logger.error(e)
+        await asyncio.sleep(e.x)
 
 
 async def upload_progress_hook(current, total, chat_id, message_id, file_name):
