@@ -34,8 +34,7 @@ async def start_message_handler(c: Client, m: Message):
                         f'Search from downloaded {emoji.MAGNIFYING_GLASS_TILTED_LEFT}',
                         switch_inline_query_current_chat="dl: ")
                 ]
-            ])
-        )
+            ]))
 
 
 @Client.on_message(filters.command("help", prefixes=["/"]))
@@ -50,9 +49,9 @@ async def help_message_handler(c: Client, m: Message):
         "You can also download books by sending the link if you have a book link from the following sites\n"
         "library.lol, libgen.lc, libgen.gs or b-ok.cc\n\n"
         "Or you can send the book's md5 like so\n"
-        "MD5:a382109f7fdde3be5b2cb4f82d97443b",
-        disable_web_page_preview=True
-        )
+        "MD5:a382109f7fdde3be5b2cb4f82d97443b\n\n"
+        "Conversion to PDF from other ebook types is done using ConvertAPI",
+        disable_web_page_preview=True)
 
 
 @Client.on_message(group=-1)

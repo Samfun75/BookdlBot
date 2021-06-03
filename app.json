@@ -55,11 +55,17 @@
         "DATABASE_DB_TYPE": {
             "description": "The type of Mongodb you are using. Enter 'Mongo_Atlas' or 'Mongo_Community'",
             "required": true
+        },
+        "CONVERT_API": {
+            "description": "ConvertAPI secret key, used to convert books to PDF",
+            "required": true
         }
     },
-    "buildpacks": [{
-        "url": "heroku/python"
-    }],
+    "buildpacks": [
+        {
+            "url": "heroku/python"
+        }
+    ],
     "formation": {
         "worker": {
             "quantity": 1,

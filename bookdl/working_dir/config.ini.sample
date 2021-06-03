@@ -20,3 +20,6 @@ db_username = username
 db_password = password
 db_name = BookdlBot
 db_type = Mongo_Atlas (or Mongo_Community)
+
+[convert]
+convert_api = secretkey

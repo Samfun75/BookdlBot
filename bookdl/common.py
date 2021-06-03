@@ -17,14 +17,14 @@ class Common:
             self.bot_api_token = os.environ.get("TG_BOT_TOKEN")
             self.bot_dustbin = int(os.environ.get("TG_DUSTBIN_CHAT", "-100"))
             self.allowed_users = ast.literal_eval(
-                os.environ.get("ALLOWED_USERS", '[]')
-            )
-
+                os.environ.get("ALLOWED_USERS", '[]'))
+            self.convert_api = os.environ.get("CONVERT_API", None)
             self.db_host = os.environ.get("DATABASE_DB_HOST", None)
             self.db_username = os.environ.get("DATABASE_DB_USERNAME", None)
             self.db_password = os.environ.get("DATABASE_DB_PASSWORD", None)
             self.db_name = os.environ.get("DATABASE_DB_NAME", "BookdlBot")
-            if os.environ.get("DATABASE_DB_TYPE", None).lower().split('_')[1] == 'community':
+            if os.environ.get("DATABASE_DB_TYPE",
+                              None).lower().split('_')[1] == 'community':
                 self.db_type = 'mongodb'
             else:
                 self.db_type = 'mongodb+srv'
@@ -36,26 +36,34 @@ class Common:
 
             self.tg_api_id = int(self.app_config.get("pyrogram", "api_id"))
             self.tg_api_hash = self.app_config.get("pyrogram", "api_hash")
-            self.bot_session = self.app_config.get(
-                "bot-configuration", "session")
-            self.bot_api_token = self.app_config.get(
-                "bot-configuration", "bot_token")
-            self.bot_dustbin = int(self.app_config.get(
-                "bot-configuration", "dustbin"))
+            self.bot_session = self.app_config.get("bot-configuration",
+                                                   "session")
+            self.bot_api_token = self.app_config.get("bot-configuration",
+                                                     "bot_token")
+            self.bot_dustbin = int(
+                self.app_config.get("bot-configuration", "dustbin"))
             self.allowed_users = ast.literal_eval(
                 self.app_config.get("bot-configuration",
-                                    "allowed_users", fallback='[]')
-            )
-
-            self.db_host = self.app_config.get(
-                "database", "db_host", fallback=None)
-            self.db_username = self.app_config.get(
-                "database", "db_username", fallback=None)
-            self.db_password = self.app_config.get(
-                "database", "db_password", fallback=None)
-            self.db_name = self.app_config.get(
-                "database", "db_name", fallback="BookdlBot")
-            if self.app_config.get("database", "db_type").lower().split('_')[1] == 'community':
+                                    "allowed_users",
+                                    fallback='[]'))
+            self.convert_api = self.app_config.get("convert",
+                                                   "convert_api",
+                                                   fallback=None)
+            self.db_host = self.app_config.get("database",
+                                               "db_host",
+                                               fallback=None)
+            self.db_username = self.app_config.get("database",
+                                                   "db_username",
+                                                   fallback=None)
+            self.db_password = self.app_config.get("database",
+                                                   "db_password",
+                                                   fallback=None)
+            self.db_name = self.app_config.get("database",
+                                               "db_name",
+                                               fallback="BookdlBot")
+            if self.app_config.get(
+                    "database",
+                    "db_type").lower().split('_')[1] == 'community':
                 self.db_type = 'mongodb'
             else:
                 self.db_type = 'mongodb+srv'
