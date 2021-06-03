@@ -1,4 +1,5 @@
 import time
+import shutil
 import asyncio
 import logging
 import aiohttp
@@ -54,25 +55,28 @@ class Convert:
             loop = asyncio.get_event_loop()
             convert_process = loop.run_in_executor(None, self.__convert,
                                                    params, extension, stat_var)
+            start_time = time.time()
+            while True:
+                if convert_status[stat_var]['Done']:
+                    break
+                else:
+                    try:
+                        await ack_msg.edit_text(
+                            f'Convertion to PDF started... {int(time.time() - start_time)}'
+                        )
+                    except MessageNotModified as e:
+                        logger.error(e)
+                    except FloodWait as e:
+                        logger.error(e)
+                        await asyncio.sleep(e.x)
+                    await asyncio.sleep(2)
+            Result = await convert_process
         except ApiError as e:
             logger.error(e)
             await ack_msg.edit_text(e)
-        start_time = time.time()
-        while True:
-            if convert_status[stat_var]['Done']:
-                break
-            else:
-                try:
-                    await ack_msg.edit_text(
-                        f'Convertion to PDF started... {int(time.time() - start_time)}'
-                    )
-                except MessageNotModified as e:
-                    logger.error(e)
-                except FloodWait as e:
-                    logger.error(e)
-                    await asyncio.sleep(e.x)
-                await asyncio.sleep(2)
-        Result = await convert_process
+            shutil.rmtree(temp_dir)
+            return
+
         await ack_msg.reply_text(
             f'Conversion Costed **{Result.conversion_cost}** seconds from ConvertAPI.'
         )
@@ -103,10 +107,16 @@ class Convert:
     def __convert(params, extension, stat_var):
         convertapi.api_secret = Common().convert_api
         logger.info('Conversion Started...')
-        result = convertapi.convert('pdf',
-                                    params,
-                                    from_format=extension,
-                                    timeout=120)
-        logger.info('Conversion Finished!')
-        convert_status[stat_var]['Done'] = True
+        try:
+            result = convertapi.convert('pdf',
+                                        params,
+                                        from_format=extension,
+                                        timeout=120)
+            logger.info('Conversion Finished!')
+        except ApiError as e:
+            convert_status[stat_var]['Done'] = True
+            logger.error('Conversion Failed!')
+            raise e
+        finally:
+            convert_status[stat_var]['Done'] = True
         return result
