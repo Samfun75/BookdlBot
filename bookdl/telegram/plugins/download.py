@@ -94,7 +94,7 @@ async def callback_download_handler(c: Client, cb: CallbackQuery):
 
 
 @Client.on_callback_query(filters.callback_query("convert"), group=1)
-async def callback_download_handler(c: Client, cb: CallbackQuery):
+async def callback_convert_handler(c: Client, cb: CallbackQuery):
     params = cb.payload.split('_')
 
     cb_chat = int(params[0]) if len(params) > 0 else None
