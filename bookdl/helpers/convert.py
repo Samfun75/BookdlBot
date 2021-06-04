@@ -10,9 +10,11 @@ import humanfriendly as size
 from bookdl.helpers import Util
 from bookdl.common import Common
 from pyrogram.types import Message
+from bookdl.telegram import BookDLBot
 from convertapi.exceptions import ApiError
-from libgenesis.download import LibgenDownload
 from bookdl.helpers.uploader import Uploader
+from bookdl.database.files import BookdlFiles
+from libgenesis.download import LibgenDownload
 from pyrogram.errors import MessageNotModified, FloodWait
 
 logger = logging.getLogger(__name__)
@@ -26,7 +28,13 @@ class Convert:
     async def convert_to_pdf(self, md5: str, msg: Message):
         ack_msg = await msg.reply_text('About to convert book to PDF...',
                                        quote=True)
-
+        book = await BookdlFiles().get_file_by_md5(md5=md5)
+        if book and book['file_type'] == 'application/pdf':
+            await BookDLBot.copy_message(chat_id=msg.chat.id,
+                                         from_chat_id=book['chat_id'],
+                                         message_id=book['msg_id'])
+            await ack_msg.delete()
+            return
         _, detail = await Util().get_detail(
             md5, return_fields=['mirrors', 'title', 'extension'])
 
@@ -36,7 +44,7 @@ class Convert:
         if not Path.is_dir(temp_dir):
             Path.mkdir(temp_dir)
         file_path = Path.joinpath(
-            temp_dir, Path(detail['title'] + '  [@SamfunBookdlbot]' + '.pdf'))
+            temp_dir, Path(detail['title'] + '  [@SamfunBookdlbot].pdf'))
 
         direct_links = await LibgenDownload().get_directlink(
             detail['mirrors']['main'])
