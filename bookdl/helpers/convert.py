@@ -85,9 +85,8 @@ class Convert:
             shutil.rmtree(temp_dir)
             return
 
-        await ack_msg.reply_text(
-            f'Conversion Costed **{Result.conversion_cost}** seconds from ConvertAPI.'
-        )
+        detail[
+            'cost'] = 'ConvertAPI Cost: **{Result.conversion_cost}** seconds.'
         await ack_msg.edit_text(f'About to download converted file...')
         try:
             async with aiohttp.ClientSession() as dl_ses:
@@ -98,14 +97,17 @@ class Convert:
                     async with aiofiles.open(file_path, mode="wb") as dl_file:
                         current = 0
                         logger.info(f'Starting download: {file_name}')
+                        start_time = time.time()
                         async for chunk in resp.content.iter_chunked(1024 *
                                                                      1024):
                             await dl_file.write(chunk)
                             current += len(chunk)
-                            await ack_msg.edit_text(
-                                f'Downloading: **{detail["title"]}**\n'
-                                f"Status: **{size.format_size(current, binary=True)}** of **{size.format_size(total_size, binary=True)}**"
-                            )
+                            if time.time() - start_time > 2:
+                                await ack_msg.edit_text(
+                                    f'Downloading: **{detail["title"]}**\n'
+                                    f"Status: **{size.format_size(current, binary=True)}** of **{size.format_size(total_size, binary=True)}**"
+                                )
+                                start_time = time.time()
         except Exception as e:
             logger.exception(e)
             return None
