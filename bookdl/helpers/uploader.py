@@ -50,8 +50,8 @@ class Uploader:
         except Exception as e:
             logger.error(e)
         finally:
-            if Path.is_dir(Path(file_path).parent):
-                shutil.rmtree(Path(file_path).parent)
+            if Path.is_dir(file_path.parent):
+                shutil.rmtree(file_path.parent)
 
     @staticmethod
     async def send_file_to_dustbin(file_message: Message, md5: str,

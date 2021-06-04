@@ -43,15 +43,12 @@ class Convert:
             Path(f'{ack_msg.chat.id}+{ack_msg.message_id}'))
         if not Path.is_dir(temp_dir):
             Path.mkdir(temp_dir)
-        file_path = Path.joinpath(
-            temp_dir, Path(detail['title'] + '  [@SamfunBookdlbot].pdf'))
 
         direct_links = await LibgenDownload().get_directlink(
             detail['mirrors']['main'])
         extension = detail['extension']
         params = {
             'File': direct_links[1],
-            'FileName': detail['title'],
             'PdfVersion': '2.0',
             'OpenZoom': '100',
             'PdfTitle': '@SamfunBookdlbot - ' + detail['title'],
@@ -85,8 +82,11 @@ class Convert:
             shutil.rmtree(temp_dir)
             return
 
+        file_path = Path.joinpath(
+            temp_dir,
+            Path('[@SamfunBookdlbot] ' + str(Result.file.filename) + '.pdf'))
         detail[
-            'cost'] = 'ConvertAPI Cost: **{Result.conversion_cost}** seconds.'
+            'cost'] = f'ConvertAPI Cost: **{Result.conversion_cost}** seconds.'
         await ack_msg.edit_text(f'About to download converted file...')
         try:
             async with aiohttp.ClientSession() as dl_ses:
