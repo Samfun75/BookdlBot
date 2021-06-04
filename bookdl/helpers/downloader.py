@@ -1,14 +1,15 @@
 import asyncio
 import logging
+import mimetypes
 from pathlib import Path
 from ..helpers import Util
 import humanfriendly as size
 from libgenesis import Libgen
 from bookdl.common import Common
+from pyrogram.types import Message
 from bookdl.telegram import BookDLBot
 from bookdl.helpers.uploader import Uploader
 from bookdl.database.files import BookdlFiles
-from pyrogram.types import Message
 from pyrogram.errors import MessageNotModified, FloodWait
 
 logger = logging.getLogger(__name__)
@@ -20,14 +21,17 @@ class Downloader:
     async def download_book(md5: str, msg: Message):
         ack_msg = await msg.reply_text('About to download book...', quote=True)
         book = await BookdlFiles().get_file_by_md5(md5=md5)
-        if book:
+        _, detail = await Util().get_detail(
+            md5, return_fields=['extension', 'title', 'coverurl'])
+
+        if book and book['file_name'].split('.')[-1] == detail['extension']:
             await BookDLBot.copy_message(chat_id=msg.chat.id,
                                          from_chat_id=book['chat_id'],
                                          message_id=book['msg_id'])
             await ack_msg.delete()
             return
         link = f'http://library.lol/main/{md5}'
-        _, detail = await Util().get_detail(md5)
+
         file_path = await Libgen().download(
             link,
             dest_folder=Path.joinpath(
@@ -38,7 +42,7 @@ class Downloader:
                 ack_msg.chat.id, ack_msg.message_id, detail['title']
             ])
         status_progress[f"{ack_msg.chat.id}{ack_msg.message_id}"] = {}
-        await Uploader().upload_book(file_path, ack_msg, md5)
+        await Uploader().upload_book(file_path, ack_msg, md5, detail=detail)
 
     @staticmethod
     async def download_progress_hook(current, total, chat_id, message_id,

@@ -36,7 +36,7 @@ class Convert:
             await ack_msg.delete()
             return
         _, detail = await Util().get_detail(
-            md5, return_fields=['mirrors', 'title', 'extension'])
+            md5, return_fields=['mirrors', 'title', 'extension', 'coverurl'])
 
         temp_dir = Path.joinpath(
             Common().working_dir,
@@ -109,7 +109,7 @@ class Convert:
         except Exception as e:
             logger.exception(e)
             return None
-        await Uploader().upload_book(file_path, ack_msg, md5)
+        await Uploader().upload_book(file_path, ack_msg, md5, detail=detail)
 
     @staticmethod
     def __convert(params, extension, stat_var):

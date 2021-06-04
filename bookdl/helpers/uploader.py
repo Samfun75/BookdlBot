@@ -20,12 +20,15 @@ status_progress = {}
 
 class Uploader:
     @staticmethod
-    async def upload_book(file_path: Path, ack_msg: Message, md5: str):
+    async def upload_book(file_path: Path,
+                          ack_msg: Message,
+                          md5: str,
+                          detail: dict = None):
         ack_msg = await ack_msg.edit_text('About to upload book...')
-        _, detail = await Util().get_detail(
+        _, detail = detail or await Util().get_detail(
             md5=md5, return_fields=['coverurl', 'title'])
-        cover_url = detail['coverurl']
-        thumb = await Uploader().get_thumb(cover_url, ack_msg)
+
+        thumb = await Uploader().get_thumb(detail['coverurl'], ack_msg)
         status_progress[f"{ack_msg.chat.id}{ack_msg.message_id}"] = {}
         status_progress[f"{ack_msg.chat.id}{ack_msg.message_id}"][
             "last_upload_updated"] = time.time()

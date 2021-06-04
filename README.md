@@ -87,9 +87,10 @@ stop with <kbd>CTRL</kbd>+<kbd>C</kbd>
 
 ## Usage
 
-- Send /start and press 'Search 🔍' and on the open inline query type the book name
+- Send /start and press <kbd>Search 🔍</kbd> and on the open inline query type the book name
 - Send a book's MD5 like 'MD5:a382109f7fdde3be5b2cb4f82d97443b'
 - Send a book link from 'library.lol, libgen.lc, libgen.gs or b-ok.cc'
-- For books other that PDF, a '🔃 Convert to PDF' button is included and it uses converapi to convert the ebook to pdf
 
 After performing one of the above seteps a book detail with 'Download' button is returned and press the button to download and upload the book to telegram.
+
+For books other that PDF, a <kbd>🔃 Convert to PDF</kbd> button is included and it uses converapi to convert the ebook to pdf
