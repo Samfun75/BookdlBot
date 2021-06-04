@@ -25,7 +25,7 @@ class Uploader:
                           md5: str,
                           detail: dict = None):
         ack_msg = await ack_msg.edit_text('About to upload book...')
-        _, detail = detail or await Util().get_detail(
+        _, detail = (None, detail) or await Util().get_detail(
             md5=md5, return_fields=['coverurl', 'title'])
 
         thumb = await Uploader().get_thumb(detail['coverurl'], ack_msg)
