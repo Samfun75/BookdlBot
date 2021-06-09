@@ -1,6 +1,6 @@
 # Bookdl Bot
 
-This is my attempt to integrate [libgenesis](https://github.com/Samfun75/libgenesis) (an api for Libgen.rs) to a telegram bot.
+This is a working example to integrate [libgenesis](https://github.com/Samfun75/libgenesis) (an api for Libgen.rs) with a telegram bot.
 
 ## Requirments
 
