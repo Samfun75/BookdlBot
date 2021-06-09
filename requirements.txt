@@ -6,5 +6,6 @@ lxml==4.6.3
 pymongo[srv]==3.11.3
 Pyrogram==1.2.9
 requests==2.25.1
+sanitize-filename==1.2.0
 TgCrypto==1.2.2
 tldextract==3.1.0

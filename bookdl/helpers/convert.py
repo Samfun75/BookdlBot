@@ -11,6 +11,7 @@ from bookdl.helpers import Util
 from bookdl.common import Common
 from pyrogram.types import Message
 from bookdl.telegram import BookDLBot
+from sanitize_filename import sanitize
 from convertapi.exceptions import ApiError
 from bookdl.helpers.uploader import Uploader
 from bookdl.database.files import BookdlFiles
@@ -84,7 +85,7 @@ class Convert:
 
         file_path = Path.joinpath(
             temp_dir,
-            Path('[@SamfunBookdlbot] ' + str(Result.file.filename) + '.pdf'))
+            Path('[@SamfunBookdlbot] ' + sanitize(detail['title']) + '.pdf'))
         detail[
             'cost'] = f'ConvertAPI Cost: **{Result.conversion_cost}** seconds.'
         await ack_msg.edit_text(f'About to download converted file...')
