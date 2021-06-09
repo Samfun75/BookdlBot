@@ -33,18 +33,20 @@ class Downloader:
             await ack_msg.delete()
             return
         link = f'http://library.lol/main/{md5}'
-
+        temp_dir = Path.joinpath(
+            Common().working_dir,
+            Path(f'{ack_msg.chat.id}+{ack_msg.message_id}'))
         file = await Libgen().download(
             link,
-            dest_folder=Path.joinpath(
-                Common().working_dir,
-                Path(f'{ack_msg.chat.id}+{ack_msg.message_id}')),
+            dest_folder=temp_dir,
             progress=Downloader().download_progress_hook,
             progress_args=[
                 ack_msg.chat.id, ack_msg.message_id, detail['title']
             ])
-        file_path = '[SamfunBookdlbot] ' + sanitize(
-            detail['title']) + f'.{detail["extension"]}'
+        file_path = Path.joinpath(
+            temp_dir,
+            Path('[@SamfunBookdlbot] ' + sanitize(detail['title']) +
+                 f'.{detail["extension"]}'))
         if Path.is_file(file):
             Path.rename(file, file_path)
         await Uploader().upload_book(
