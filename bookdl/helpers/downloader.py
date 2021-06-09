@@ -2,6 +2,8 @@ import asyncio
 import logging
 import mimetypes
 from pathlib import Path
+
+from sanitize_filename.sanitize_filename import sanitize
 from ..helpers import Util
 import humanfriendly as size
 from libgenesis import Libgen
@@ -32,7 +34,7 @@ class Downloader:
             return
         link = f'http://library.lol/main/{md5}'
 
-        file_path = await Libgen().download(
+        file = await Libgen().download(
             link,
             dest_folder=Path.joinpath(
                 Common().working_dir,
@@ -41,8 +43,15 @@ class Downloader:
             progress_args=[
                 ack_msg.chat.id, ack_msg.message_id, detail['title']
             ])
-        status_progress[f"{ack_msg.chat.id}{ack_msg.message_id}"] = {}
-        await Uploader().upload_book(file_path, ack_msg, md5, detail=detail)
+        file_path = '[SamfunBookdlbot] ' + sanitize(
+            detail['title']) + f'.{detail["extension"]}'
+        if Path.is_file(file):
+            Path.rename(file, file_path)
+        await Uploader().upload_book(
+            file_path if Path.is_file(file_path) else file,
+            ack_msg,
+            md5,
+            detail=detail)
 
     @staticmethod
     async def download_progress_hook(current, total, chat_id, message_id,

@@ -41,7 +41,7 @@ class Uploader:
                 ],
                 thumb=thumb,
                 caption=file_path.name +
-                ('\n' + detail['cost']) if 'cost' in detail.keys() else '')
+                (('\n' + detail['cost']) if 'cost' in detail.keys() else ''))
             await ack_msg.delete()
             await Uploader().send_file_to_dustbin(file_message, md5, detail)
         except FloodWait as e:
