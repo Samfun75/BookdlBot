@@ -57,13 +57,11 @@ async def help_message_handler(c: Client, m: Message):
 @Client.on_message(group=-1)
 async def stop_user_from_doing_anything(_, message: Message):
     allowed_users = Common().allowed_users
-    if allowed_users and message.from_user:
-        if message.from_user.id not in allowed_users:
-            message.stop_propagation()
-        else:
+    if allowed_users:
+        if message.chat.id in allowed_users or message.chat.id == Common(
+        ).bot_dustbin:
             message.continue_propagation()
+        else:
+            message.stop_propagation()
     else:
-        if message.from_user:
-            message.continue_propagation()
-        else:
-            message.stop_propagation()
+        message.continue_propagation()

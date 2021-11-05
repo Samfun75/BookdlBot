@@ -1,11 +1,14 @@
+import asyncio
 from pyrogram import Client
-from pyrogram.types import InlineQuery, InlineQueryResultArticle, InputTextMessageContent, ChosenInlineResult, InlineKeyboardMarkup, InlineKeyboardButton
+from ..utils import filters
+from libgenesis import Libgen
+from ...telegram import Common
 from pyrogram.file_id import FileId
-from pyrogram.raw.types import InputBotInlineResultDocument, InputDocument, InputBotInlineMessageMediaAuto
-from pyrogram.raw.functions.messages import SetInlineBotResults
 from bookdl.telegram import BookDLBot
 from bookdl.database.files import BookdlFiles
-from libgenesis import Libgen
+from pyrogram.raw.functions.messages import SetInlineBotResults
+from pyrogram.types import Message, InlineQuery, InlineQueryResultArticle, InputTextMessageContent
+from pyrogram.raw.types import InputBotInlineResultDocument, InputDocument, InputBotInlineMessageMediaAuto
 
 
 @Client.on_inline_query()
@@ -74,3 +77,20 @@ async def inline_query_handler(c: Client, iq: InlineQuery):
         await iq.answer(results=res, cache_time=0, is_personal=False)
     else:
         await iq.answer([])
+
+
+@Client.on_message(filters.chat(Common().bot_dustbin) & filters.document,
+                   group=0)
+async def manually_save_to_db(c: Client, m: Message):
+    await BookdlFiles().insert_new_files(title=m.document.file_name,
+                                         file_name=m.document.file_name,
+                                         msg_id=m.message_id,
+                                         chat_id=m.chat.id,
+                                         md5='md5',
+                                         file_type=m.document.mime_type,
+                                         coverurl='',
+                                         file_id=m.document.file_id)
+    ack_msg = await m.reply_text(
+        text=f'**{m.document.file_name}** has been added to DB.', quote=True)
+    await asyncio.sleep(3)
+    await ack_msg.delete()
