@@ -18,8 +18,9 @@ class BookdlFiles:
         """
         self.files_collection = BookdlDB().db['Files']
 
-    async def insert_new_files(self, title: str, file_name: str, msg_id: int, chat_id: int,
-                               md5: str, file_type: str, coverurl: str, file_id: str):
+    async def insert_new_files(self, title: str, file_name: str, msg_id: int,
+                               chat_id: int, md5: str, file_type: str,
+                               coverurl: str, file_id: str):
         self.files_collection.insert_one({
             "title": title,
             "file_name": file_name,
@@ -34,8 +35,8 @@ class BookdlFiles:
     async def count_files_by_md5(self, md5: str):
         return self.files_collection.count({"md5": md5})
 
-    async def get_file_by_md5(self, md5: str):
-        return self.files_collection.find_one({"md5": md5})
+    async def get_file_by_md5(self, md5: str, typ: str):
+        return self.files_collection.find_one({"md5": md5, "file_type": typ})
 
     async def get_file_by_mongo_id(self, file_id: str):
         return self.files_collection.find_one({"_id": ObjectId(file_id)})

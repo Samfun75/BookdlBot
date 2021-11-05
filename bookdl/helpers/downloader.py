@@ -1,17 +1,16 @@
 import asyncio
 import logging
-import mimetypes
 from pathlib import Path
-
-from sanitize_filename.sanitize_filename import sanitize
 from ..helpers import Util
 import humanfriendly as size
 from libgenesis import Libgen
+from mimetypes import guess_type
 from bookdl.common import Common
 from pyrogram.types import Message
 from bookdl.telegram import BookDLBot
 from bookdl.helpers.uploader import Uploader
 from bookdl.database.files import BookdlFiles
+from sanitize_filename.sanitize_filename import sanitize
 from pyrogram.errors import MessageNotModified, FloodWait
 
 logger = logging.getLogger(__name__)
@@ -22,11 +21,12 @@ class Downloader:
     @staticmethod
     async def download_book(md5: str, msg: Message):
         ack_msg = await msg.reply_text('About to download book...', quote=True)
-        book = await BookdlFiles().get_file_by_md5(md5=md5)
         _, detail = await Util().get_detail(
             md5, return_fields=['extension', 'title', 'coverurl'])
+        typ, _ = guess_type(detail['extension'])
+        book = await BookdlFiles().get_file_by_md5(md5=md5, typ=typ)
 
-        if book and book['file_name'].split('.')[-1] == detail['extension']:
+        if book:
             await BookDLBot.copy_message(chat_id=msg.chat.id,
                                          from_chat_id=book['chat_id'],
                                          message_id=book['msg_id'])

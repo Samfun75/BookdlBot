@@ -29,8 +29,9 @@ class Convert:
     async def convert_to_pdf(self, md5: str, msg: Message):
         ack_msg = await msg.reply_text('About to convert book to PDF...',
                                        quote=True)
-        book = await BookdlFiles().get_file_by_md5(md5=md5)
-        if book and book['file_type'] == 'application/pdf':
+        book = await BookdlFiles().get_file_by_md5(md5=md5,
+                                                   typ='application/pdf')
+        if book:
             await BookDLBot.copy_message(chat_id=msg.chat.id,
                                          from_chat_id=book['chat_id'],
                                          message_id=book['msg_id'])
