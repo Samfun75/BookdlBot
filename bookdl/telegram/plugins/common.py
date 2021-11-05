@@ -2,7 +2,7 @@ from ...telegram import Common
 from bookdl.database.files import BookdlFiles
 from bookdl.database.users import BookdlUsers
 from pyrogram import filters, emoji, Client
-from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
+from pyrogram.types import Message, InlineQuery, InlineKeyboardMarkup, InlineKeyboardButton
 
 
 @Client.on_message(filters.command("start", prefixes=["/"]))
@@ -65,3 +65,18 @@ async def stop_user_from_doing_anything(_, message: Message):
             message.stop_propagation()
     else:
         message.continue_propagation()
+
+
+@Client.on_inline_query(group=-1)
+async def stop_user_from_doing_anything_inline(_, iq: InlineQuery):
+    allowed_users = Common().allowed_users
+    if allowed_users and iq.from_user:
+        if iq.from_user.id not in allowed_users:
+            iq.stop_propagation()
+        else:
+            iq.continue_propagation()
+    else:
+        if iq.from_user:
+            iq.continue_propagation()
+        else:
+            iq.stop_propagation()

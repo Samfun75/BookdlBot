@@ -23,7 +23,7 @@ class Downloader:
         ack_msg = await msg.reply_text('About to download book...', quote=True)
         _, detail = await Util().get_detail(
             md5, return_fields=['extension', 'title', 'coverurl'])
-        typ, _ = guess_type(detail['extension'])
+        typ, _ = guess_type(detail['title'] + '.' + detail['extension'])
         book = await BookdlFiles().get_file_by_md5(md5=md5, typ=typ)
 
         if book:
