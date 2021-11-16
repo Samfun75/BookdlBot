@@ -79,18 +79,33 @@ async def inline_query_handler(c: Client, iq: InlineQuery):
         await iq.answer([])
 
 
-@Client.on_message(filters.chat(Common().bot_dustbin) & filters.document,
+@Client.on_message(filters.chat(Common().bot_dustbin) &
+                   (filters.document | filters.audio),
                    group=0)
 async def manually_save_to_db(c: Client, m: Message):
-    await BookdlFiles().insert_new_files(title=m.document.file_name,
-                                         file_name=m.document.file_name,
-                                         msg_id=m.message_id,
-                                         chat_id=m.chat.id,
-                                         md5='md5',
-                                         file_type=m.document.mime_type,
-                                         coverurl='',
-                                         file_id=m.document.file_id)
-    ack_msg = await m.reply_text(
-        text=f'**{m.document.file_name}** has been added to DB.', quote=True)
+    if m.audio is not None:
+        await BookdlFiles().insert_new_files(title=m.audio.title,
+                                             file_name=m.audio.file_name,
+                                             msg_id=m.message_id,
+                                             chat_id=m.chat.id,
+                                             md5='md5',
+                                             file_type=m.audio.mime_type,
+                                             coverurl='',
+                                             file_id=m.audio.file_id)
+        ack_msg = await m.reply_text(
+            text=f'**{m.audio.file_name}** has been added to DB.', quote=True)
+    else:
+        await BookdlFiles().insert_new_files(title=m.document.file_name,
+                                             file_name=m.document.file_name,
+                                             msg_id=m.message_id,
+                                             chat_id=m.chat.id,
+                                             md5='md5',
+                                             file_type=m.document.mime_type,
+                                             coverurl='',
+                                             file_id=m.document.file_id)
+        ack_msg = await m.reply_text(
+            text=f'**{m.document.file_name}** has been added to DB.',
+            quote=True)
+
     await asyncio.sleep(3)
     await ack_msg.delete()
