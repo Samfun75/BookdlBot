@@ -50,6 +50,8 @@ async def help_message_handler(c: Client, m: Message):
         "library.lol, libgen.lc, libgen.gs or b-ok.cc\n\n"
         "Or you can send the book's md5 like so\n"
         "MD5:a382109f7fdde3be5b2cb4f82d97443b\n\n"
+        "If you send a document(book) or audio(audiobook) to the dustbin channel, the bot "
+        "will save the document or audio to the database and it is available for search.\n\n"
         "Conversion to PDF from other ebook types is done using ConvertAPI",
         disable_web_page_preview=True)
 
