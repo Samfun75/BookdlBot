@@ -10,6 +10,11 @@ This is a working example to integrate [libgenesis](https://github.com/Samfun75/
 
 ## Installation
 
+### Docker
+
+Guide for installation using docker:
+
+<a href="docker/" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/docker/docker-original-wordmark.svg" alt="Docker Instructions" width="80" height="80"/> </a>
 ### Heroku
 
 Use the below button to deploy.
