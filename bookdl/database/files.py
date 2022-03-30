@@ -33,7 +33,7 @@ class BookdlFiles:
         })
 
     async def count_files_by_md5(self, md5: str):
-        return self.files_collection.count({"md5": md5})
+        return self.files_collection.count_documents({"md5": md5})
 
     async def get_file_by_md5(self, md5: str, typ: str):
         return self.files_collection.find_one({"md5": md5, "file_type": typ})

@@ -1,4 +1,3 @@
-import typing
 from bookdl.database import BookdlDB
 
 
@@ -16,7 +15,7 @@ class BookdlUsers:
         self.user_collection = BookdlDB().db["Users"]
 
     async def insert_user(self, user_id: int):
-        if self.user_collection.count({"user_id": user_id}) > 0:
+        if self.user_collection.count_documents({"user_id": user_id}) > 0:
             return False
         else:
             self.user_collection.insert_one(
