@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  bookdlbot:
+    image: bookdl
+    container_name: bookdlbot
+    build:
+      context: https://github.com/Samfun75/BookdlBot.git
+    restart: on-failure
+    env_file:
+        - docker-config.ini

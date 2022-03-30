@@ -1,0 +1,20 @@
+ENV = ANYTHING
+
+# [pyrogram]
+TG_API_ID = 1234567
+TG_API_HASH = xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+# [bot-configuration]
+TG_BOT_TOKEN = 123456789:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+TG_DUSTBIN_CHAT = -100123456789
+ALLOWED_USERS = [123456789, 987654321]
+
+# [database]
+DATABASE_DB_HOST = xxxxxxxxxx.xxxxx.mongodb.net or where you hosted the db
+DATABASE_DB_USERNAME = username
+DATABASE_DB_PASSWORD = password
+DATABASE_DB_NAME = StreamerBot
+DATABASE_DB_TYPE = Mongo_Atlas (or Mongo_Community)
+
+# [convert]
+CONVERT_API = xxxxxxxxxxxxxxxxxx
