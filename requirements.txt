@@ -1,11 +1,11 @@
-aiofiles==0.6.0
+aiofiles==0.8.0
 convertapi==1.4.0
-humanfriendly==9.1
-libgenesis==0.1.7
+humanfriendly==10.0
+libgenesis==0.1.8
 lxml==4.7.1
 pymongo[srv]==4.0.2
 Pyrogram==1.4.12
-requests==2.25.1
+requests==2.27.1
 sanitize-filename==1.2.0
 TgCrypto==1.2.3
-tldextract==3.1.0
+tldextract==3.2.0
