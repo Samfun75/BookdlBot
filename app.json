@@ -14,7 +14,8 @@
     "env": {
         "ENV": {
             "description": "Setting this to ANYTHING will enable VARs when in ENV mode",
-            "value": "ANYTHING"
+            "value": "ANYTHING",
+            "required": true
         },
         "TG_BOT_TOKEN": {
             "description": "Your bot token, as a string.",
