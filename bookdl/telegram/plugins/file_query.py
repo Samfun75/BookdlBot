@@ -1,4 +1,5 @@
 import asyncio
+from pyrogram import emoji
 from pyrogram import Client
 from ..utils import filters
 from libgenesis import Libgen
@@ -74,9 +75,14 @@ async def inline_query_handler(c: Client, iq: InlineQuery):
                             reply_markup=None))
 
     if res:
-        await iq.answer(results=res, cache_time=0, is_personal=False)
+        await iq.answer(results=res, cache_time=60, is_personal=False)
     else:
-        await iq.answer([])
+        await iq.answer(
+            results=[],
+            cache_time=7,
+            switch_pm_text=f'{emoji.CROSS_MARK} No results for "{q}"',
+            switch_pm_parameter="okay",
+        )
 
 
 @Client.on_message(filters.chat(Common().bot_dustbin) &
