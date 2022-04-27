@@ -6,6 +6,6 @@ services:
     container_name: bookdlbot
     build:
       context: https://github.com/Samfun75/BookdlBot.git
-    restart: on-failure
+    restart: always
     env_file:
         - docker-config.ini
