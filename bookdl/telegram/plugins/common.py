@@ -1,5 +1,4 @@
 from ...telegram import Common
-from bookdl.database.files import BookdlFiles
 from bookdl.database.users import BookdlUsers
 from pyrogram import filters, emoji, Client
 from pyrogram.types import Message, InlineQuery, InlineKeyboardMarkup, InlineKeyboardButton
@@ -8,33 +7,21 @@ from pyrogram.types import Message, InlineQuery, InlineKeyboardMarkup, InlineKey
 @Client.on_message(filters.command("start", prefixes=["/"]))
 async def start_message_handler(c: Client, m: Message):
     await BookdlUsers().insert_user(m.from_user.id)
-    if len(m.command) > 1:
-        if m.command[1].split("-")[0] == 'plf':
-            mongo_id = m.command[1].split("-", 1)[1]
-            file_details = await BookdlFiles().get_file_by_mongo_id(mongo_id)
-
-            if file_details is not None:
-                file_message = await c.get_messages(
-                    chat_id=file_details['chat_id'],
-                    message_ids=file_details['msg_id'])
-
-                await m.reply_document(document=file_message.document.file_id)
-    else:
-        await m.reply_text(
-            text=f"Hello! My name is **Bookdl Bot** {emoji.BOOKS} \n"
-            "I can help you download books try typing in inline mode",
-            reply_markup=InlineKeyboardMarkup([
-                [
-                    InlineKeyboardButton(
-                        f'Search {emoji.MAGNIFYING_GLASS_TILTED_LEFT}',
-                        switch_inline_query_current_chat="")
-                ],
-                [
-                    InlineKeyboardButton(
-                        f'Search from downloaded {emoji.MAGNIFYING_GLASS_TILTED_LEFT}',
-                        switch_inline_query_current_chat="dl: ")
-                ]
-            ]))
+    await m.reply_text(
+        text=f"Hello! My name is **Bookdl Bot** {emoji.BOOKS} \n"
+        "I can help you download books try typing in inline mode",
+        reply_markup=InlineKeyboardMarkup([
+            [
+                InlineKeyboardButton(
+                    f'Search {emoji.MAGNIFYING_GLASS_TILTED_LEFT}',
+                    switch_inline_query_current_chat="")
+            ],
+            [
+                InlineKeyboardButton(
+                    f'Search from downloaded {emoji.MAGNIFYING_GLASS_TILTED_LEFT}',
+                    switch_inline_query_current_chat="dl: ")
+            ]
+        ]))
 
 
 @Client.on_message(filters.command("help", prefixes=["/"]))
