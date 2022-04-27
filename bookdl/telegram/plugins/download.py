@@ -46,14 +46,13 @@ async def book_process(msg: Message, md5: str):
         inline_buttons = [[
             InlineKeyboardButton(
                 text=f"{emoji.FLOPPY_DISK} Download Book",
-                callback_data=f"download_{msg.chat.id}_{msg.message_id}_{md5}")
+                callback_data=f"download_{msg.chat.id}_{msg.id}_{md5}")
         ]]
         if detail['extension'] not in ['pdf', 'zip', 'rar']:
             inline_buttons.append([
                 InlineKeyboardButton(
                     text=f"{emoji.CLOCKWISE_VERTICAL_ARROWS} Convert to PDF",
-                    callback_data=
-                    f"convert_{msg.chat.id}_{msg.message_id}_{md5}")
+                    callback_data=f"convert_{msg.chat.id}_{msg.id}_{md5}")
             ])
         formated = await Util().get_formatted(detail)
 

@@ -51,15 +51,6 @@ Create a new `config.ini` using the sample available at `bookdl/working_dir/conf
 [pyrogram]
 api_id = 1234567
 api_hash = xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-app_version = 1.0
-device_model = PC
-system_version = Windows
-
-# Where pyrogram plugins are located
-
-[plugins]
-root = bookdl/telegram/plugins
-
 
 # More info on Bot API Key/token can be found here: https://core.telegram.org/bots#6-botfather
 

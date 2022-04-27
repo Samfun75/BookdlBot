@@ -42,7 +42,7 @@ class Convert:
 
         temp_dir = Path.joinpath(
             Common().working_dir,
-            Path(f'{ack_msg.chat.id}+{ack_msg.message_id}'))
+            Path(f'{ack_msg.chat.id}+{ack_msg.id}'))
         if not Path.is_dir(temp_dir):
             Path.mkdir(temp_dir)
 
@@ -56,7 +56,7 @@ class Convert:
             'PdfTitle': '@SamfunBookdlbot - ' + detail['title'],
             'RotatePage': 'ByPage'
         }
-        stat_var = f"{ack_msg.chat.id}{ack_msg.message_id}"
+        stat_var = f"{ack_msg.chat.id}{ack_msg.id}"
         convert_status[stat_var] = {'Done': False}
         try:
             loop = asyncio.get_event_loop()

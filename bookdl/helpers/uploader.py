@@ -29,15 +29,15 @@ class Uploader:
             md5=md5, return_fields=['coverurl', 'title'])
 
         thumb = await Uploader().get_thumb(detail['coverurl'], ack_msg)
-        status_progress[f"{ack_msg.chat.id}{ack_msg.message_id}"] = {}
-        status_progress[f"{ack_msg.chat.id}{ack_msg.message_id}"][
+        status_progress[f"{ack_msg.chat.id}{ack_msg.id}"] = {}
+        status_progress[f"{ack_msg.chat.id}{ack_msg.id}"][
             "last_upload_updated"] = time.time()
         try:
             file_message = await ack_msg.reply_document(
                 document=file_path,
                 progress=Uploader().upload_progress_hook,
                 progress_args=[
-                    ack_msg.chat.id, ack_msg.message_id, file_path.name
+                    ack_msg.chat.id, ack_msg.id, file_path.name
                 ],
                 thumb=thumb,
                 caption=file_path.name +
@@ -61,7 +61,7 @@ class Uploader:
         await BookdlFiles().insert_new_files(
             title=detail['title'],
             file_name=fd_msg.document.file_name,
-            msg_id=fd_msg.message_id,
+            msg_id=fd_msg.id,
             chat_id=fd_msg.chat.id,
             md5=md5,
             file_type=fd_msg.document.mime_type,
@@ -94,7 +94,7 @@ class Uploader:
         file_name = os.path.basename(url)
         thumb_file = Path.joinpath(
             Common().working_dir,
-            Path(f'{ack_msg.chat.id}+{ack_msg.message_id}'), Path(file_name))
+            Path(f'{ack_msg.chat.id}+{ack_msg.id}'), Path(file_name))
         resp = requests.get(url, allow_redirects=True)
         async with aiofiles.open(thumb_file, mode='wb') as dl_file:
             await dl_file.write(resp.content)

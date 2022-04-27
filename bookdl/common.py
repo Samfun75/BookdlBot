@@ -13,7 +13,7 @@ class Common:
         if self.is_env:
             self.tg_api_id = int(os.environ.get("TG_API_ID"))
             self.tg_api_hash = os.environ.get("TG_API_HASH")
-            self.bot_session = ":memory:"
+            self.session_name = "BookdlBot"
             self.bot_api_token = os.environ.get("TG_BOT_TOKEN")
             self.bot_dustbin = int(os.environ.get("TG_DUSTBIN_CHAT", "-100"))
             self.allowed_users = ast.literal_eval(
@@ -36,7 +36,7 @@ class Common:
 
             self.tg_api_id = int(self.app_config.get("pyrogram", "api_id"))
             self.tg_api_hash = self.app_config.get("pyrogram", "api_hash")
-            self.bot_session = self.app_config.get("bot-configuration",
+            self.session_name = self.app_config.get("bot-configuration",
                                                    "session")
             self.bot_api_token = self.app_config.get("bot-configuration",
                                                      "bot_token")

@@ -39,7 +39,7 @@ async def inline_query_handler(c: Client, iq: InlineQuery):
                         f"File Type: {file['file_type']}",
                     ))
 
-            await BookDLBot.send(data=SetInlineBotResults(
+            await BookDLBot.invoke(data=SetInlineBotResults(
                 query_id=int(iq.id), results=res, cache_time=0))
         else:
             await iq.answer([])
@@ -86,7 +86,7 @@ async def manually_save_to_db(c: Client, m: Message):
     if m.audio is not None:
         await BookdlFiles().insert_new_files(title=m.audio.title,
                                              file_name=m.audio.file_name,
-                                             msg_id=m.message_id,
+                                             msg_id=m.id,
                                              chat_id=m.chat.id,
                                              md5='md5',
                                              file_type=m.audio.mime_type,
@@ -97,7 +97,7 @@ async def manually_save_to_db(c: Client, m: Message):
     else:
         await BookdlFiles().insert_new_files(title=m.document.file_name,
                                              file_name=m.document.file_name,
-                                             msg_id=m.message_id,
+                                             msg_id=m.id,
                                              chat_id=m.chat.id,
                                              md5='md5',
                                              file_type=m.document.mime_type,

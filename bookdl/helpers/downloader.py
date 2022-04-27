@@ -35,13 +35,13 @@ class Downloader:
         link = f'http://library.lol/main/{md5}'
         temp_dir = Path.joinpath(
             Common().working_dir,
-            Path(f'{ack_msg.chat.id}+{ack_msg.message_id}'))
+            Path(f'{ack_msg.chat.id}+{ack_msg.id}'))
         file = await Libgen().download(
             link,
             dest_folder=temp_dir,
             progress=Downloader().download_progress_hook,
             progress_args=[
-                ack_msg.chat.id, ack_msg.message_id, detail['title']
+                ack_msg.chat.id, ack_msg.id, detail['title']
             ])
         file_path = Path.joinpath(
             temp_dir,
