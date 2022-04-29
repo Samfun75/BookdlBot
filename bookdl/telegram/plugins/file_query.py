@@ -4,51 +4,40 @@ from pyrogram import Client
 from ..utils import filters
 from libgenesis import Libgen
 from ...telegram import Common
-from pyrogram.file_id import FileId
-from bookdl.telegram import BookDLBot
 from bookdl.database.files import BookdlFiles
-from pyrogram.raw.functions.messages import SetInlineBotResults
-from pyrogram.types import Message, InlineQuery, InlineQueryResultArticle, InputTextMessageContent
-from pyrogram.raw.types import InputBotInlineResultDocument, InputDocument, InputBotInlineMessageMediaAuto
+from pyrogram.types import Message, InlineQuery, InlineQueryResultArticle, InputTextMessageContent, \
+     InlineQueryResultCachedDocument
 
 
 @Client.on_inline_query()
 async def inline_query_handler(c: Client, iq: InlineQuery):
-    q = iq.query
+    q = iq.query.strip()
     res = []
-    if len(q.strip()) < 2:
-        await iq.answer([])
+    if len(q) < 2:
+        await iq.answer(
+            results=[],
+            switch_pm_text='You must enter at least 2 characters to search',
+            switch_pm_parameter="okay",
+        )
         return
-    if q.strip().startswith('dl:'):
-        q_res_data = await BookdlFiles().get_file_by_name(
-            q.split(':')[1].strip(), 50)
+    if q.startswith('dl:'):
+        q = q.split(':')[1].strip()
+        q_res_data = await BookdlFiles().get_file_by_name(q, 50)
         if q_res_data:
             for file in q_res_data:
-                file_id_obj = FileId.decode(file['file_id'])
                 res.append(
-                    InputBotInlineResultDocument(
+                    InlineQueryResultCachedDocument(
                         id=str(file['_id']),
-                        type='file',
-                        document=InputDocument(
-                            id=file_id_obj.media_id,
-                            access_hash=file_id_obj.access_hash,
-                            file_reference=file_id_obj.file_reference),
-                        send_message=InputBotInlineMessageMediaAuto(
-                            message=file['title']),
+                        document_file_id=file['file_id'],
+                        caption=file['title'],
                         title=file['title'],
                         description=f"File Name: {file['file_name']}\n"
                         f"File Type: {file['file_type']}",
                     ))
-
-            await BookDLBot.invoke(data=SetInlineBotResults(
-                query_id=int(iq.id), results=res, cache_time=0))
-        else:
-            await iq.answer([])
-        return
     else:
-        if q.strip():
+        if q:
             result = await Libgen(result_limit=50
-                                  ).search(query=q.strip(),
+                                  ).search(query=q,
                                            return_fields=[
                                                'title', 'pages', 'language',
                                                'publisher', 'year', 'author',
