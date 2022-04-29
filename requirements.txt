@@ -4,7 +4,7 @@ humanfriendly==10.0
 libgenesis==0.1.9
 lxml==4.7.1
 pymongo[srv]==4.0.2
-pyrogram==2.0.13
+pyrogram==2.0.14
 requests==2.27.1
 sanitize-filename==1.2.0
 tgCrypto==1.2.3
