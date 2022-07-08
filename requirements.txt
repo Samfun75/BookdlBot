@@ -2,7 +2,7 @@ aiofiles==0.8.0
 convertapi==1.4.0
 humanfriendly==10.0
 libgenesis==0.1.9
-lxml==4.7.1
+lxml==4.9.1
 pymongo[srv]==4.0.2
 pyrogram==2.0.14
 requests==2.27.1
