@@ -10,6 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 class Util:
+
     @staticmethod
     async def get_md5(link: str) -> str:
         regex_md5 = re.compile(
@@ -49,15 +50,15 @@ class Util:
     @staticmethod
     async def get_formatted(detail: dict) -> str:
         formated = ''
-        formated += 'Title: **' + str(detail['title']) + '**\n'
-        formated += 'Author: **' + str(detail['author']) + '**\n'
-        formated += 'Volume: **' + str(detail['volumeinfo']) + '**\n'
-        formated += 'Publisher: **' + str(detail['publisher']) + '**\n'
-        formated += 'Year: **' + str(detail['year']) + '**\n'
-        formated += 'Language: **' + str(detail['language']) + '**\n'
-        formated += f"Size: **{size.format_size(int(detail['filesize']), binary=True)}**\n"
-        formated += 'Extention: **' + str(detail['extension']) + '**\n'
-        formated += 'Added Time: **' + str(detail['timeadded']) + '**\n'
-        formated += 'Last Modified Time: **' + \
-            str(detail['timelastmodified']) + '**\n'
+        formated += ('Title: **' + str(detail['title']) + '**\n') if detail['title'] else ''
+        formated += ('Author: **' + str(detail['author']) + '**\n') if detail['author'] else ''
+        formated += ('Volume: **' + str(detail['volumeinfo']) + '**\n') if detail['volumeinfo'] else ''
+        formated += ('Publisher: **' + str(detail['publisher']) + '**\n') if detail['publisher'] else ''
+        formated += ('Year: **' + str(detail['year']) + '**\n') if detail['year'] else ''
+        formated += ('Language: **' + str(detail['language']) + '**\n') if detail['language'] else ''
+        formated += (f"Size: **{size.format_size(int(detail['filesize']), binary=True)}**\n") if detail['filesize'] else ''
+        formated += ('Extention: **' + str(detail['extension']) + '**\n') if detail['extension'] else ''
+        formated += ('Added Time: **' + str(detail['timeadded']) + '**\n') if detail['timeadded'] else ''
+        formated += ('Last Modified Time: **' + \
+            str(detail['timelastmodified']) + '**\n') if detail['timelastmodified'] else ''
         return formated

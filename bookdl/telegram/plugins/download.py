@@ -1,6 +1,7 @@
 import re
 import logging
 import tldextract
+from pyrogram import enums
 from ..utils import filters
 from bookdl.helpers import Util
 from pyrogram import emoji, Client
@@ -62,6 +63,7 @@ async def book_process(msg: Message, md5: str):
                 caption=f"**Book Detail**\n\n"
                 f"{formated}",
                 reply_markup=InlineKeyboardMarkup(inline_buttons),
+                parse_mode=enums.ParseMode.MARKDOWN,
                 quote=True)
         else:
             await msg.reply_text(
@@ -69,6 +71,7 @@ async def book_process(msg: Message, md5: str):
                 f"{formated}",
                 reply_markup=InlineKeyboardMarkup(inline_buttons),
                 disable_web_page_preview=True,
+                parse_mode=enums.ParseMode.MARKDOWN,
                 quote=True)
     else:
         await msg.reply_text(
