@@ -16,6 +16,7 @@ async def inline_query_handler(c: Client, iq: InlineQuery):
     if len(q) < 2:
         await iq.answer(
             results=[],
+            cache_time=0,
             switch_pm_text='You must enter at least 2 characters to search',
             switch_pm_parameter="okay",
         )
@@ -59,8 +60,8 @@ async def inline_query_handler(c: Client, iq: InlineQuery):
                             result[item]['coverurl'],
                             input_message_content=InputTextMessageContent(
                                 message_text=f"MD5: {result[item]['md5']}\n"
-                                f"Title: **{result[item]['title']}**\n"
-                                f"Author: **{result[item]['author']}**"),
+                                f"Title: **{result[item]['title']}.**\n"
+                                f"Author: **{result[item]['author']}.**"),
                             reply_markup=None))
 
     if res:
@@ -68,7 +69,7 @@ async def inline_query_handler(c: Client, iq: InlineQuery):
     else:
         await iq.answer(
             results=[],
-            cache_time=7,
+            cache_time=0,
             switch_pm_text=f'{emoji.CROSS_MARK} No results for "{q}"',
             switch_pm_parameter="okay",
         )
